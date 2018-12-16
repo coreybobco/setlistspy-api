@@ -1,0 +1,19 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: phantomjs
+spec:
+  selector:
+    matchLabels:
+      app: phantomjs
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: phantomjs
+    spec:
+      containers:
+      - name: master
+        image: codeclou/docker-phantomjs-webdriver-standalone:latest
+        ports:
+        - containerPort: 4444

@@ -1,0 +1,82 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: flower
+  labels:
+    deployment: flower
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod: celery-flower
+  template:
+    metadata:
+      labels:
+        pod: celery-flower
+    spec:
+      containers:
+      - name: flower
+        image: gcr.io/setlist-spy/setlistspy_api:v1.0.0
+        imagePullPolicy: Always
+        workingDir: /usr/src/app/
+        command: ['celery', 'flower', '-A', 'setlistspy.taskapp', '--port=5555', '--broker=redis://redis-service:6379/1']
+        ports:
+          - containerPort: 5555
+        env:
+            # [START django secrets]
+            - name: DJANGO_SETTINGS_MODULE
+              valueFrom:
+                secretKeyRef:
+                  name: django
+                  key: settings_module
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: django
+                  key: secret_key
+            - name: STATIC_URL
+              valueFrom:
+                secretKeyRef:
+                  name: django
+                  key: static_url
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: django
+                  key: redis_url
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: django
+                  key: api_port
+            # [END django secrets]
+            # [START cloudsql_secrets]
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: password
+            - name: POSTGRES_HOST
+              valueFrom:
+                 secretKeyRef:
+                  name: cloudsql
+                  key: host
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: port
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: database
+            # [END cloudsql_secrets]
+        resources:
+          limits:
+            cpu: 100m

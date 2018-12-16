@@ -1,0 +1,33 @@
+FROM ubuntu:18.04
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+RUN apt-get update \
+  && apt-get install -y python3-pip python3-dev postgresql-client wget git \
+  && cd /usr/local/bin \
+  && ln -s /usr/bin/python3 python \
+  && pip3 install --upgrade pip
+
+COPY ./requirements /requirements
+RUN pip install --no-cache-dir -r /requirements/local.txt
+
+COPY config /usr/src/app/config
+COPY ./gunicorn_config.py ./manage.py /usr/src/app/
+
+COPY setlistspy /usr/src/app/setlistspy
+COPY ./lib /usr/src/app/lib
+
+COPY ./compose/local/django/entrypoint /entrypoint
+RUN sed -i 's/\r//' /entrypoint
+RUN chmod +x /entrypoint
+
+COPY ./compose/local/django/celery/worker/start /start-celeryworker
+RUN sed -i 's/\r//' /start-celeryworker
+RUN chmod +x /start-celeryworker
+
+COPY ./compose/local/django/celery/beat/start /start-celerybeat
+RUN sed -i 's/\r//' /start-celerybeat
+RUN chmod +x /start-celerybeat
+
+RUN mkdir /usr/src/app/uploads

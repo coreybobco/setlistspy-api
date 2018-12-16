@@ -1,0 +1,73 @@
+version: "3.1"
+
+services:
+  app: &app
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: setlistspy_local_django
+    depends_on:
+      - postgresql
+      - redis
+      - phantomjs
+    links:
+      - phantomjs
+      - postgresql
+      - redis
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - "6400:6400"
+    restart: on-failure
+    volumes:
+      - .:/app
+    command: /entrypoint
+
+  postgresql:
+    build:
+      context: .
+      dockerfile: compose/local/postgres/Dockerfile
+    volumes:
+      - ./database:/var/lib/postgresql
+    env_file:
+      - ./.envs/.local/.postgres
+    expose:
+      - "5432"
+
+  redis:
+    image: redis:latest
+    expose:
+    - "6379"
+
+  celery-worker:
+    <<: *app
+    image: setlistspy_local_celeryworker
+    depends_on:
+      - redis
+      - postgresql
+    ports: []
+    command: /start-celeryworker
+
+  celery-beat:
+    <<: *app
+    image: setlistspy_local_celerybeat
+    depends_on:
+      - redis
+      - postgresql
+
+    ports: []
+    command: /start-celerybeat
+
+  flower:
+    image: mher/flower
+    depends_on:
+      - celery-worker
+    command: celery flower --port=5555 --broker=redis://redis:6379
+    ports:
+      - "5555:5555"
+
+  phantomjs:
+    image: codeclou/docker-phantomjs-webdriver-standalone:latest
+    ports:
+      - "4444:4444"

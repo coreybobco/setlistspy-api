@@ -1,0 +1,12 @@
+# Redis
+# ------------------------------------------------------------------------------
+REDIS_URL=redis://redis:6379
+
+# Celery
+# ------------------------------------------------------------------------------
+
+# Flower
+CELERY_FLOWER_USER=EywFrjmjdTJmlQamwSWXkLmJCUKOrBjM
+CELERY_FLOWER_PASSWORD=DIavnskvBGHZTwY5NrVIxCBHMxgeyG1BeetUJl75A2jHB2z8wFJ5rWf7oVlq4oQB
+
+WEB_CONCURRENCY=5

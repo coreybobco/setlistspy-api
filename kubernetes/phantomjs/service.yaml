@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: phantomjs
+spec:
+  selector:
+    app: phantomjs
+  ports:
+  - protocol: TCP
+    port: 4444
+    targetPort: 4444

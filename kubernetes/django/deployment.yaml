@@ -1,0 +1,103 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    app: api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: gcr.io/setlist-spy/setlistspy_api:v1.0.0
+        imagePullPolicy: Always
+        workingDir: /usr/src/app/
+        command: ["/entrypoint"]
+        env:
+            # [START django secrets]
+            - name: DJANGO_SETTINGS_MODULE
+              valueFrom:
+                secretKeyRef:
+                  name: django
+                  key: settings_module
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: django
+                  key: secret_key
+            - name: STATIC_URL
+              valueFrom:
+                secretKeyRef:
+                  name: django
+                  key: static_url
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: django
+                  key: redis_url
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: django
+                  key: api_port
+            # [END django secrets]
+            # [START cloudsql_secrets]
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: password
+            - name: POSTGRES_HOST
+              valueFrom:
+                 secretKeyRef:
+                  name: cloudsql
+                  key: host
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: port
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: database
+            # [END cloudsql_secrets]
+        ports:
+        - containerPort: 8000
+
+      # [START proxy_container]
+      - image: gcr.io/cloudsql-docker/gce-proxy:1.12
+        name: cloudsql-proxy
+        command: ["/cloud_sql_proxy", "--dir=/cloudsql",
+                  "-instances=setlist-spy:us-west1-b:setlistspy-pql9=tcp:5432",
+                  "-credential_file=/secrets/cloudsql/credentials.json"]
+        volumeMounts:
+          - name: cloudsql-oauth-credentials
+            mountPath: /secrets/cloudsql
+            readOnly: true
+          - name: ssl-certs
+            mountPath: /etc/ssl/certs
+          - name: cloudsql
+            mountPath: /cloudsql
+      # [END proxy_container]
+      # [START volumes]
+      volumes:
+        - name: cloudsql-oauth-credentials
+          secret:
+            secretName: cloudsql-oauth-credentials
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+        - name: cloudsql
+          emptyDir:
+      # [END volumes]

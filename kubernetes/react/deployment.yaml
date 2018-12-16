@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: gcr.io/setlist-spy/setlistspy_web:v1.0.0
+        imagePullPolicy: Always
+        workingDir: /usr/src/app/
+        command: ["/usr/src/app/start-production.sh"]
+        ports:
+        - containerPort: 8080
+        env:
+          - name: API_URL
+            value: 'http://api.setlistspy.com:8000/api/'
+          - name: PORT
+            value: '80'

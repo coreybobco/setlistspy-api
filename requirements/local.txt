@@ -1,0 +1,6 @@
+-r ./base.txt
+
+django-silk==3.0.1
+ipdb==0.10.3
+flake8==3.5.0
+mccabe==0.6.1

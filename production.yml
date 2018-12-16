@@ -1,0 +1,71 @@
+version: "3.1"
+
+services:
+  app: &app
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    image: setlistspy_production_django
+    depends_on:
+      - redis
+      - phantomjs
+      - cloudsql-proxy
+    links:
+      - phantomjs
+      - redis
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
+    ports:
+      - "6400:6400"
+    restart: on-failure
+    volumes:
+      - .:/app
+    command: /entrypoint
+
+  cloudsql-proxy:
+    image: gcr.io/cloudsql-docker/gce-proxy:1.12
+    # Port: MySQL (3306), PostgreSQL (5433)
+    command: /cloud_sql_proxy -instances=setlist-spy:us-west1-b:setlistspy-pql9=tcp:0.0.0.0:5432 -credential_file=/root/.config/gcloud/credentials.json
+    volumes:
+      # this mounts your application default credential on the container, preventing the
+      # 'invalid json file "/config": google: read JWT from JSON credentials: 'type' field is "authorized_user" (expected "service_account")'
+      # error if you point to the actual credential file directly
+      - .config:/root/.config
+    ports:
+      - 5432:5432
+
+  redis:
+    image: redis:latest
+    expose:
+    - "6379"
+
+  celery-worker:
+    <<: *app
+    image: setlistspy_production_celeryworker
+    depends_on:
+      - redis
+    ports: []
+    command: /start-celeryworker
+
+  celery-beat:
+    <<: *app
+    image: setlistspy_production_celerybeat
+    depends_on:
+      - redis
+
+    ports: []
+    command: /start-celerybeat
+
+#  flower:
+#    image: mher/flower
+#    depends_on:
+#      - celery-worker
+#    command: celery flower --app=setlistspy.taskapp --broker="${REDIS_URL}" --basic_auth="${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}"
+#    ports:
+#      - "5555:5555"
+
+  phantomjs:
+    image: codeclou/docker-phantomjs-webdriver-standalone:latest
+    ports:
+      - "4444:4444"
