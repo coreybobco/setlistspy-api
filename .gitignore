@@ -36,7 +36,7 @@ profile_data/*
 *.csv
 
 # Esoteric PyCharm stuff
-.idea/*
+.idea/
 
 # DB Dumps
 *.sql
