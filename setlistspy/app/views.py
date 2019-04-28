@@ -58,6 +58,10 @@ class TrackViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):
     @list_route(methods=['get'], url_path='stats')
     def tracklist_stats(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset(*args, **kwargs))
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True, **kwargs)
         return Response(serializer.data)
 
@@ -65,7 +69,7 @@ class TrackViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):
     def track_stats(self, request, pk=None, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, context=self.get_serializer_context(), **kwargs)
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
 
 class ArtistViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):

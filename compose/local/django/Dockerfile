@@ -1,13 +1,10 @@
-FROM ubuntu:18.04
+FROM python:3.6.6
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 RUN apt-get update \
-  && apt-get install -y python3-pip python3-dev postgresql-client wget git \
-  && cd /usr/local/bin \
-  && ln -s /usr/bin/python3 python \
-  && pip3 install --upgrade pip
+  && apt-get install -y postgresql-client
 
 COPY ./requirements /requirements
 RUN pip install --no-cache-dir -r /requirements/local.txt

@@ -21,7 +21,7 @@ services:
     restart: on-failure
     volumes:
       - .:/app
-    command: /entrypoint
+    command: ./entrypoint
 
   cloudsql-proxy:
     image: gcr.io/cloudsql-docker/gce-proxy:1.12
@@ -46,7 +46,7 @@ services:
     depends_on:
       - redis
     ports: []
-    command: /start-celeryworker
+    command: ./start-celeryworker
 
   celery-beat:
     <<: *app
@@ -55,7 +55,7 @@ services:
       - redis
 
     ports: []
-    command: /start-celerybeat
+    command: ./start-celerybeat
 
 #  flower:
 #    image: mher/flower
