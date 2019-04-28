@@ -65,7 +65,7 @@ class TrackViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):
     def track_stats(self, request, pk=None, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, context=self.get_serializer_context(), **kwargs)
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
 
 class ArtistViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):

@@ -60,7 +60,6 @@ class TrackFilter(filters.FilterSet):
             'setlists__dj__name': ['exact', 'in', 'startswith', 'icontains'],
             'plays__label__name': ['exact', 'in', 'startswith', 'icontains'],
             'plays__set_order': ['exact', 'in'],
-            'plays__label__name': ['exact', 'in', 'startswith', 'icontains'],
         }
 
 
