@@ -13,10 +13,10 @@ spec:
     spec:
       containers:
       - name: api
-        image: gcr.io/setlist-spy/setlistspy_api:v1.0.0
+        image: gcr.io/setlist-spy/setlistspy_api:1.0.1
         imagePullPolicy: Always
         workingDir: /usr/src/app/
-        command: ["/entrypoint"]
+        command: ["./entrypoint"]
         env:
             # [START django secrets]
             - name: DJANGO_SETTINGS_MODULE

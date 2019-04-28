@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: flower
-        image: gcr.io/setlist-spy/setlistspy_api:v1.0.0
+        image: gcr.io/setlist-spy/setlistspy_api:1.0.1
         imagePullPolicy: Always
         workingDir: /usr/src/app/
         command: ['celery', 'flower', '-A', 'setlistspy.taskapp', '--port=5555', '--broker=redis://redis-service:6379/1']
