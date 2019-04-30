@@ -21,7 +21,8 @@ services:
       - "6400:6400"
     restart: on-failure
     volumes:
-      - .:/app
+      - ./setlistspy:/usr/src/app/setlistspy
+      - ./lib:/usr/src/app/lib
     command: /entrypoint
 
   postgresql:
