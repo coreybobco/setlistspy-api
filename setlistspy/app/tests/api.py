@@ -68,14 +68,14 @@ class DJsApiTestCase(SetSpyApiTestCase):
         TrackPlayFactory(setlist__dj=dj1)
         TrackPlayFactory(setlist__dj=dj2)
 
-        # By name
-        res = self.client.get(self.list_url, {'name': dj1.name}, format='json')
+        # By name (case-insensitive)
+        res = self.client.get(self.list_url, {'name': dj1.name.upper()}, format='json')
         self.assertEqual(res.data['count'], 1)
         res = self.client.get(self.list_url, {'name__in': f'{dj1.name},{dj2.name}'}, format='json')
         self.assertEqual(res.data['count'], 2)
 
         # By labels they play
-        dj_filter = {'setlists__track_plays__label__name': dj1.setlists.first().track_plays.first().label.name}
+        dj_filter = {'setlists__track_plays__label__name': dj1.setlists.first().track_plays.first().label.name.upper()}
         res = self.client.get(self.list_url, dj_filter, format='json')
         self.assertEqual(res.data['count'], 1)
         # Use complex filter to support value with commas in it
@@ -117,7 +117,7 @@ class LabelsApiTestCase(SetSpyApiTestCase):
 
         # By DJ name
         res = self.client.get(self.list_url,
-                              {'track_plays__setlist__dj__name': label1.track_plays.first().setlist.dj.name},
+                              {'track_plays__setlist__dj__name': label1.track_plays.first().setlist.dj.name.upper()},
                               format='json')
         self.assertEqual(res.data['count'], 1)
         label_filter = {'filters': f'(track_plays__setlist__dj__name={label1.track_plays.first().setlist.dj.name})|' +
@@ -152,27 +152,27 @@ class TracksApiTestCase(SetSpyApiTestCase):
         TrackPlayFactory(track=track3, set_order=3)
 
         # By title
-        res = self.client.get(self.list_url, {'title': track1.title}, format='json')
+        res = self.client.get(self.list_url, {'title': track1.title.upper()}, format='json') # case insensitive
         self.assertEqual(res.data['count'], 1)
         res = self.client.get(self.list_url, {'title__in': f'{track1.title},{track2.title}'}, format='json')
         self.assertEqual(res.data['count'], 2)
 
         # By artist name
-        res = self.client.get(self.list_url, {'artist__name': track1.artist.name}, format='json')
+        res = self.client.get(self.list_url, {'artist__name': track1.artist.name.upper()}, format='json') # case insensitive
         self.assertEqual(res.data['count'], 1)
         res = self.client.get(self.list_url, {'artist__name__in': f'{track1.artist.name},{track2.artist.name}'},
                               format='json')
         self.assertEqual(res.data['count'], 2)
 
         # By setlist title
-        res = self.client.get(self.list_url, {'setlists__title': track1.setlists.first().title}, format='json')
+        res = self.client.get(self.list_url, {'setlists__title': track1.setlists.first().title.upper()}, format='json')   # case insensitive
         self.assertEqual(res.data['count'], 1)
         track_filter = f'{track1.setlists.first().title},{track2.setlists.first().title}'
         res = self.client.get(self.list_url, {'setlists__title__in': track_filter}, format='json')
         self.assertEqual(res.data['count'], 2)
 
         # By setlist dj name
-        res = self.client.get(self.list_url, {'setlists__dj__name': track1.setlists.first().dj.name}, format='json')
+        res = self.client.get(self.list_url, {'setlists__dj__name': track1.setlists.first().dj.name.upper()}, format='json')  # case insensitive
         self.assertEqual(res.data['count'], 1)
         track_filter = {'setlists__dj__name__in': f'{track1.setlists.first().dj.name},' +
                                                   f'{track2.setlists.first().dj.name}'}
@@ -180,7 +180,7 @@ class TracksApiTestCase(SetSpyApiTestCase):
         self.assertEqual(res.data['count'], 2)
 
         # By label name
-        res = self.client.get(self.list_url, {'plays__label__name': track1.plays.first().label.name}, format='json')
+        res = self.client.get(self.list_url, {'plays__label__name': track1.plays.first().label.name.upper()}, format='json')  # case insensitive
         self.assertEqual(res.data['count'], 1)
         # Use complex filter to support value with commas in it
         track_filter = {'filters': f'(plays__label__name={track1.plays.first().label.name})|' + \
@@ -242,13 +242,13 @@ class TrackPlaysApiTestCase(SetSpyApiTestCase):
         # By label name
         res = self.client.get(self.list_url, {'label__name': play1.label.name}, format='json')
         self.assertEqual(res.data['count'], 1)
-        # Use complex filter to support value with commas in it
-        play_filter = {'filters': f'(label__name={play1.label.name})|(label__name={play2.label.name})'}
+        # Multiple filters (either/or)
+        play_filter = {'filters': f'(label__name={play1.label.name.upper()})|(label__name={play2.label.name.lower()})'}
         res = self.client.get(self.list_url, play_filter, format='json')
         self.assertEqual(res.data['count'], 2)
 
         # By track title
-        res = self.client.get(self.list_url, {'track__title': play1.track.title}, format='json')
+        res = self.client.get(self.list_url, {'track__title': play1.track.title.upper()}, format='json')
         self.assertEqual(res.data['count'], 1)
         res = self.client.get(self.list_url, {'track__title__in': f'{play1.track.title},{play2.track.title}'},
                               format='json')
@@ -269,7 +269,7 @@ class TrackPlaysApiTestCase(SetSpyApiTestCase):
         self.assertEqual(res.data['count'], 2)
 
         # By setlist dj name
-        res = self.client.get(self.list_url, {'setlist__dj__name': play1.setlist.dj.name}, format='json')
+        res = self.client.get(self.list_url, {'setlist__dj__name': play1.setlist.dj.name.upper()}, format='json')  # case insensitive
         self.assertEqual(res.data['count'], 1)
         track_filter = {'setlist__dj__name__in': f'{play1.setlist.dj.name},{play2.setlist.dj.name}'}
         res = self.client.get(self.list_url, track_filter, format='json')
@@ -313,13 +313,13 @@ class SetlistsApiTestCase(SetSpyApiTestCase):
             TrackPlayFactory(setlist=setlist1)
 
         # By title
-        res = self.client.get(self.list_url, {'title': setlist1.title}, format='json')
+        res = self.client.get(self.list_url, {'title': setlist1.title.upper()}, format='json')  # case insensitive
         self.assertEqual(res.data['count'], 1)
         res = self.client.get(self.list_url, {'title__in': f'{setlist1.title},{setlist2.title}'}, format='json')
         self.assertEqual(res.data['count'], 2)
 
         # By dj name
-        res = self.client.get(self.list_url, {'dj__name': setlist1.dj.name}, format='json')
+        res = self.client.get(self.list_url, {'dj__name': setlist1.dj.name.upper()}, format='json') # case insensitive
         self.assertEqual(res.data['count'], 1)
         setlist_filter = {'dj__name__in': f'{setlist1.dj.name},{setlist2.dj.name}'}
         res = self.client.get(self.list_url, setlist_filter, format='json')
