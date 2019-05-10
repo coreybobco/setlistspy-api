@@ -23,8 +23,7 @@ services:
     volumes:
       - ./setlistspy:/usr/src/app/setlistspy
       - ./lib:/usr/src/app/lib
-    command: /entrypoint
-
+    command: /usr/src/app/entrypoint
   postgresql:
     build:
       context: .
