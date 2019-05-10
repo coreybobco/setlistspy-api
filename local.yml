@@ -2,10 +2,10 @@ version: "3.1"
 
 services:
   app: &app
+    image: setlistspy_api
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
-    image: setlistspy_local_django
     depends_on:
       - postgresql
       - redis
@@ -26,6 +26,7 @@ services:
     command: /usr/src/app/entrypoint
 
   postgresql:
+    image: setlistspy_psql
     build:
       context: .
       dockerfile: compose/local/postgres/Dockerfile
@@ -41,23 +42,27 @@ services:
     expose:
     - "6379"
 
-  celery-worker:
-    <<: *app
-    image: setlistspy_local_celeryworker
+  celery-worker: &celery-worker
+    image: setlistspy_api
     depends_on:
       - redis
       - postgresql
+    links:
+      - phantomjs
+      - postgresql
+      - redis
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    restart: on-failure
+    volumes:
+      - ./setlistspy:/usr/src/app/setlistspy
+      - ./lib:/usr/src/app/lib
     ports: []
     command: /start-celeryworker
 
   celery-beat:
-    <<: *app
-    image: setlistspy_local_celerybeat
-    depends_on:
-      - redis
-      - postgresql
-
-    ports: []
+    <<: *celery-worker
     command: /start-celerybeat
 
   flower:
