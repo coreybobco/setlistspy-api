@@ -5,8 +5,8 @@ services:
 
 before_install:
 - docker pull gcr.io/setlist-spy/setlistspy_api:1.0.1
-- docker-compose run app /bin/sh -c "./entrypoint"
-- docker-compose run --rm app ./manage.py test --settings=setlistspy.test_settings "$@"
+- docker-compose -f local.yml run app /bin/sh -c "./entrypoint"
+- docker-compose -f local.yml run --rm app ./manage.py test --settings=setlistspy.test_settings "$@"
 
 script:
 - docker-compose -f local.yml run --rm app ./manage.py test --settings=config.settings.test "$@"
