@@ -1,3 +1,3 @@
 #! /usr/bin/env bash
 
-docker-compose run --rm app ./manage.py test --settings=setlistspy.test_settings "$@"
+docker-compose -f local.yml run --rm app ./manage.py test --settings=config.settings.test "$@"

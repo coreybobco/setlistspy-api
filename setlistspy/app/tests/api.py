@@ -210,7 +210,7 @@ class TracksApiTestCase(SetSpyApiTestCase):
         res = self.client.get(url, format='json')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         for i in range(10):
-            self.assertEqual(len(res.data[i]['setlists']), 3)
+            self.assertEqual(len(res.data['results'][i]['setlists']), 3)
 
         url = reverse('track-stats', kwargs={'pk': tracks[0].pk.hex})
         res = self.client.get(url, format='json')

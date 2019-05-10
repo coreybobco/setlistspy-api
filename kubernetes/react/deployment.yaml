@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: gcr.io/setlist-spy/setlistspy_web:1.0.2
+        image: gcr.io/setlist-spy/setlistspy_web:1.0.3
         imagePullPolicy: Always
         workingDir: /usr/src/app/
         command: ["/usr/src/app/start-production.sh"]
