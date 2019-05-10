@@ -26,8 +26,8 @@ services:
     command: /usr/src/app/entrypoint
 
   postgresql:
-    build:
     image: setlistspy_psql
+    build:
       context: .
       dockerfile: compose/local/postgres/Dockerfile
     volumes:
