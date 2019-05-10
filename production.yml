@@ -40,30 +40,35 @@ services:
     expose:
     - "6379"
 
-  celery-worker:
-    <<: *app
-    image: setlistspy_production_celeryworker
+  celery-worker: &celery-worker
+    image: setlistspy_api
     depends_on:
       - redis
+      - postgresql
+    links:
+      - phantomjs
+      - postgresql
+      - redis
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
+    restart: on-failure
+    volumes:
+      - .:/app
     ports: []
-    command: ./start-celeryworker
+    command: /start-celeryworker
 
   celery-beat:
-    <<: *app
-    image: setlistspy_production_celerybeat
+    <<: *celery-worker
+    command: /start-celerybeat
+
+  flower:
+    image: mher/flower
     depends_on:
-      - redis
-
-    ports: []
-    command: ./start-celerybeat
-
-#  flower:
-#    image: mher/flower
-#    depends_on:
-#      - celery-worker
-#    command: celery flower --app=setlistspy.taskapp --broker="${REDIS_URL}" --basic_auth="${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}"
-#    ports:
-#      - "5555:5555"
+      - celery-worker
+    command: celery flower --app=setlistspy.taskapp --broker="${REDIS_URL}" --basic_auth="${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}"
+    ports:
+      - "5555:5555"
 
   phantomjs:
     image: codeclou/docker-phantomjs-webdriver-standalone:latest
