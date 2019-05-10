@@ -15,9 +15,9 @@ COPY ./gunicorn_config.py ./manage.py /usr/src/app/
 COPY setlistspy /usr/src/app/setlistspy
 COPY ./lib /usr/src/app/lib
 
-COPY ./compose/local/django/entrypoint /entrypoint
-RUN sed -i 's/\r//' /entrypoint
-RUN chmod +x /entrypoint
+COPY ./compose/local/django/entrypoint entrypoint
+RUN sed -i 's/\r//' entrypoint
+RUN chmod +x entrypoint
 
 COPY ./compose/local/django/celery/worker/start /start-celeryworker
 RUN sed -i 's/\r//' /start-celeryworker
