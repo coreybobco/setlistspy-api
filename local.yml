@@ -59,17 +59,19 @@ services:
       - ./setlistspy:/usr/src/app/setlistspy
       - ./lib:/usr/src/app/lib
     ports: []
-    command: /start-celeryworker
+    command: ./start-celeryworker
 
   celery-beat:
     <<: *celery-worker
-    command: /start-celerybeat
+    command: ./start-celerybeat
 
   flower:
-    image: mher/flower
+    <<: *celery-worker
     depends_on:
+      - app
       - celery-worker
-    command: celery flower --port=5555 --broker=redis://redis:6379
+      - celery-beat
+    command: celery flower --app=setlistspy.taskapp --broker="$REDIS_URL"
     ports:
       - "5555:5555"
 
