@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   app: &app
-    image: setlistspy_api
+    image: setlistspy_api_local
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
@@ -43,7 +43,7 @@ services:
     - "6379"
 
   celery-worker: &celery-worker
-    image: setlistspy_api
+    image: setlistspy_api_local
     depends_on:
       - redis
       - postgresql

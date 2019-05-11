@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: setlistspy_production_django
+    image: setlistspy_api_production
     depends_on:
       - redis
       - phantomjs
@@ -41,7 +41,7 @@ services:
     - "6379"
 
   celery-worker: &celery-worker
-    image: setlistspy_api
+    image: setlistspy_api_production
     depends_on:
       - redis
       - cloudsql-proxy

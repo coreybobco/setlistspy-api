@@ -28,7 +28,7 @@ RUN sed -i 's/\r//' prepare_db && chmod +x prepare_db && \
     sed -i 's/\r//' entrypoint && chmod +x entrypoint && \
     sed -i 's/\r//' start && chmod +x start && \
     sed -i 's/\r//' start-celeryworker && chmod +x start-celeryworker && \
-    sed -i 's/\r//' start-celerybeat && chmod +x start-celerybeat && \
+    sed -i 's/\r//' start-celerybeat && chmod +x start-celerybeat
 
 RUN pip install --no-cache-dir -r requirements/production.txt
 RUN mkdir /usr/src/app/uploads
