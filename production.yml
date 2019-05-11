@@ -44,10 +44,10 @@ services:
     image: setlistspy_api
     depends_on:
       - redis
-      - postgresql
+      - cloudsql-proxy
     links:
       - phantomjs
-      - postgresql
+      - cloudsql-proxy
       - redis
     env_file:
       - ./.envs/.production/.django
@@ -56,16 +56,18 @@ services:
     volumes:
       - .:/app
     ports: []
-    command: /start-celeryworker
+    command: ./start-celeryworker
 
   celery-beat:
     <<: *celery-worker
-    command: /start-celerybeat
+    command: ./start-celerybeat
 
   flower:
-    image: mher/flower
+    <<: *celery-worker
     depends_on:
+      - app
       - celery-worker
+      - celery-beat
     command: celery flower --app=setlistspy.taskapp --broker="${REDIS_URL}" --basic_auth="${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}"
     ports:
       - "5555:5555"

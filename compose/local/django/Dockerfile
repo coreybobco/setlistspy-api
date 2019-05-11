@@ -15,21 +15,15 @@ COPY ./gunicorn_config.py ./manage.py /usr/src/app/
 COPY setlistspy /usr/src/app/setlistspy
 COPY ./lib /usr/src/app/lib
 
-
 COPY ./compose/local/django/prepare_db prepare_db
-RUN sed -i 's/\r//' prepare_db
-RUN chmod +x prepare_db
-
 COPY ./compose/local/django/entrypoint entrypoint
-RUN sed -i 's/\r//' entrypoint
-RUN chmod +x entrypoint
+COPY ./compose/local/django/celery/worker/start start-celeryworker
+COPY ./compose/local/django/celery/beat/start start-celerybeat
 
-COPY ./compose/local/django/celery/worker/start /start-celeryworker
-RUN sed -i 's/\r//' /start-celeryworker
-RUN chmod +x /start-celeryworker
-
-COPY ./compose/local/django/celery/beat/start /start-celerybeat
-RUN sed -i 's/\r//' /start-celerybeat
-RUN chmod +x /start-celerybeat
+WORKDIR /usr/src/app/
+RUN sed -i 's/\r//' prepare_db && chmod +x prepare_db && \
+    sed -i 's/\r//' entrypoint && chmod +x entrypoint && \
+    sed -i 's/\r//' start-celeryworker && chmod +x start-celeryworker && \
+    sed -i 's/\r//' start-celerybeat && chmod +x start-celerybeat
 
 RUN mkdir /usr/src/app/uploads
