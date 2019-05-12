@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: gcr.io/setlist-spy/setlistspy_api:1.0.1
+        image: gcr.io/setlist-spy/setlistspy_api:1.0.3
         imagePullPolicy: Always
         workingDir: /usr/src/app/
         command: ["./start-celeryworker"]
