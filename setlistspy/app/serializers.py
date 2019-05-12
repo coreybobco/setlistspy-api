@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Max
 from rest_framework import serializers
 from setlistspy.app.models import Artist, DJ, Label, Setlist, Track, TrackPlay
 
@@ -12,8 +12,14 @@ class DJSerializer(serializers.ModelSerializer):
 class DJStatsSerializer(DJSerializer):
     b2b_collaborators = serializers.SerializerMethodField()
     number_of_setlists = serializers.SerializerMethodField()
+    most_stacked_setlist = serializers.SerializerMethodField()
     top_artists = serializers.SerializerMethodField()
     top_labels = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DJ
+        fields = ('id', 'name', 'number_of_setlists', 'b2b_collaborators', 'most_stacked_setlist',
+                  'top_artists', 'top_labels')
 
     def get_top_artists(self, obj):
         return obj.setlists.values('tracks__artist__name').order_by('tracks__artist__name')\
@@ -36,17 +42,29 @@ class DJStatsSerializer(DJSerializer):
         )
         return DJSerializer(many=True, context=self.context).to_representation(b2b_dj_qs)
 
-    class Meta:
-        model = DJ
-        fields = ('id', 'name', 'number_of_setlists', 'b2b_collaborators', 'top_artists', 'top_labels')
+    def get_most_stacked_setlist(self, obj):
+        annotated_setlist_qs = obj.setlists.all().annotate(Count('tracks'))
+        max_num_tracks = annotated_setlist_qs.aggregate(Max('tracks__count'))['tracks__count__max']
+        if max_num_tracks > 0:
+            most_stacked_setlist = annotated_setlist_qs.get(tracks__count=max_num_tracks)
+            setlist_context = self.context
+            setlist_context['num_tracks'] = max_num_tracks
+            return SetlistSerializer(context=self.context).to_representation(instance=most_stacked_setlist)
+        return None
 
 
 class SetlistSerializer(serializers.ModelSerializer):
     dj = DJSerializer()
+    num_tracks = serializers.SerializerMethodField()
 
     class Meta:
         model = Setlist
-        fields = ('id', 'dj', 'title', 'mixesdb_id', 'b2b')
+        fields = ('id', 'dj', 'title', 'mixesdb_id', 'b2b', 'num_tracks')
+
+    def get_num_tracks(self, obj):
+        if self.context.get('num_tracks'):
+            return self.context.get('num_tracks')
+        return obj.tracks.count()
 
     @classmethod
     def setup_queryset(cls, queryset, context):

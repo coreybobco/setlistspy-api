@@ -2,6 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
+from setlistspy.app.models import Artist, DJ, Label, Setlist, Track, TrackPlay
 from setlistspy.app.factories import *
 
 
@@ -140,6 +141,10 @@ class DJsApiTestCase(SetSpyApiTestCase):
         self.assertEqual(res.json()['top_labels'][1]['count'], 9)  # 3 track plays on label # 2 * 3 sets = 9
         self.assertEqual(res.json()['top_labels'][2]['count'], 6)  # 2 track plays on label # 3 * 3 sets = 6
         self.assertEqual(res.json()['top_labels'][3]['count'], 3)  # 1 track plays on label # 4 * 3 sets = 3
+
+        # Make the first setlist 1 track longer to make sure the 'most stacked setlist' stat works right
+        first_setlist = Setlist.objects.get(mixesdb_id=0)
+        TrackPlayFactory(setlist=first_setlist)
 
 
 class LabelsApiTestCase(SetSpyApiTestCase):
