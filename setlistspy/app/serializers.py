@@ -21,14 +21,6 @@ class DJStatsSerializer(DJSerializer):
         fields = ('id', 'name', 'number_of_setlists', 'b2b_collaborators', 'most_stacked_setlist',
                   'top_artists', 'top_labels')
 
-    def get_top_artists(self, obj):
-        return obj.setlists.values('tracks__artist__name').order_by('tracks__artist__name')\
-            .annotate(count=Count('tracks__artist__name')).order_by('-count')[:25]
-
-    def get_top_labels(self, obj):
-        return obj.setlists.values('track_plays__label__name').order_by('track_plays__label__name')\
-            .annotate(count=Count('track_plays__label__name')).order_by('-count')[:25]
-
     def get_number_of_setlists(self, obj):
         '''Return number of non-empty setlists played by the DJ'''
         return obj.setlists.exclude(tracks=None).count()
@@ -46,11 +38,19 @@ class DJStatsSerializer(DJSerializer):
         annotated_setlist_qs = obj.setlists.all().annotate(Count('tracks'))
         max_num_tracks = annotated_setlist_qs.aggregate(Max('tracks__count'))['tracks__count__max']
         if max_num_tracks > 0:
-            most_stacked_setlist = annotated_setlist_qs.get(tracks__count=max_num_tracks)
+            most_stacked_setlist = annotated_setlist_qs.filter(tracks__count=max_num_tracks).first()
             setlist_context = self.context
             setlist_context['num_tracks'] = max_num_tracks
             return SetlistSerializer(context=self.context).to_representation(instance=most_stacked_setlist)
         return None
+
+    def get_top_artists(self, obj):
+        return obj.setlists.values('tracks__artist__name').order_by('tracks__artist__name')\
+            .annotate(count=Count('tracks__artist__name')).order_by('-count')[:25]
+
+    def get_top_labels(self, obj):
+        return obj.setlists.values('track_plays__label__name').order_by('track_plays__label__name')\
+            .annotate(count=Count('track_plays__label__name')).order_by('-count')[:25]
 
 
 class SetlistSerializer(serializers.ModelSerializer):
