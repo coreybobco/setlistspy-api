@@ -20,7 +20,9 @@ services:
       - "6400:6400"
     restart: on-failure
     volumes:
-      - .:/app
+      - .:/usr/src/app
+      - ./compose/local/django/prepare_db:/usr/src/app/prepare_db
+      - ./compose/local/django/entrypoint:/usr/src/app/entrypoint
     command: ./entrypoint
 
   cloudsql-proxy:
@@ -54,7 +56,9 @@ services:
       - ./.envs/.production/.postgres
     restart: on-failure
     volumes:
-      - .:/app
+      - .:/usr/src/app
+      - ./compose/local/django/celery/worker/start:/usr/src/app/start-celeryworker
+      - ./compose/local/django/celery/beat/start:/usr/src/app/start-celerybeat
     ports: []
     command: ./start-celeryworker
 
