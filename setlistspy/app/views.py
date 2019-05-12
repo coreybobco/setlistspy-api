@@ -10,6 +10,7 @@ from setlistspy.app.filters import ArtistFilter, DJFilter, LabelFilter, TrackFil
 from setlistspy.app.serializers import (
     ArtistSerializer,
     DJSerializer,
+    DJStatsSerializer,
     LabelSerializer,
     TrackSerializer,
     TrackPlaySerializer,
@@ -25,6 +26,17 @@ class DJViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):
     queryset = DJ.objects.all()
     filter_backends = (ComplexFilterBackend, OrderingFilter)
     filter_class = DJFilter
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action == 'stats':
+            return DJStatsSerializer
+        return super().get_serializer_class(*args, **kwargs)
+
+    @detail_route(methods=['get'], url_path='stats')
+    def stats(self, request, pk=None, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, context=self.get_serializer_context(), **kwargs)
+        return Response(serializer.data)
 
 
 class SetlistViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):
@@ -51,22 +63,12 @@ class TrackViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):
             .order_by("artist__name", "title")
 
     def get_serializer_class(self, *args, **kwargs):
-        if self.action in ['track_stats', 'tracklist_stats']:
+        if self.action == 'stats':
             return TrackStatsSerializer
         return super().get_serializer_class(*args, **kwargs)
 
-    @list_route(methods=['get'], url_path='stats')
-    def tracklist_stats(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset(*args, **kwargs))
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True, **kwargs)
-        return Response(serializer.data)
-
     @detail_route(methods=['get'], url_path='stats')
-    def track_stats(self, request, pk=None, *args, **kwargs):
+    def stats(self, request, pk=None, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, context=self.get_serializer_context(), **kwargs)
         return Response(serializer.data)

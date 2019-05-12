@@ -85,6 +85,62 @@ class DJsApiTestCase(SetSpyApiTestCase):
         res = self.client.get(self.list_url, dj_filter, format='json')
         self.assertEqual(res.data['count'], 2)
 
+    def test_stats(self):
+        # Make 3 identical setlists - 4 tracks on label #1, 3 on label #2, 2 on label #3, 1 on label #4
+        # Of these 10 tracks, 5 are produced by artist 1, 3 by artist 2, 2 by artist 3
+
+        tracks = []
+        artist = ArtistFactory()
+        for i in range(5):
+            tracks.append(TrackFactory(artist=artist))
+        artist = ArtistFactory()
+        for i in range(3):
+            tracks.append(TrackFactory(artist=artist))
+        artist = ArtistFactory()
+        for i in range(2):
+            tracks.append(TrackFactory(artist=artist))
+
+        dj = DJFactory()
+
+        labels = []
+        for i in range(4):
+            labels.append(LabelFactory())
+        for i in range(3):
+            setlist = SetlistFactory(dj=dj, mixesdb_id=i)
+            for i in range(4):
+                TrackPlayFactory(track=tracks[i], setlist=setlist, label=labels[0], set_order=i)
+            for i in range(3):
+                TrackPlayFactory(track=tracks[4 + i], setlist=setlist, label=labels[1], set_order=4 + i)
+            for i in range(2):
+                TrackPlayFactory(track=tracks[7 + i], setlist=setlist, label=labels[2], set_order=7 + i)
+            TrackPlayFactory(track=tracks[9], setlist=setlist, label=labels[3], set_order=9)
+
+            # Make two of the setlists 'b2b' by cloning them but linking the other two other djs
+            if setlist.mixesdb_id != 0:
+                setlist.b2b = True
+                setlist.save()
+                other_dj = DJFactory()
+                setlist = SetlistFactory(dj=other_dj, mixesdb_id=setlist.mixesdb_id, b2b=True)
+                for i in range(4):
+                    TrackPlayFactory(track=tracks[i], setlist=setlist, label=labels[0], set_order=i)
+                for i in range(3):
+                    TrackPlayFactory(track=tracks[4 + i], setlist=setlist, label=labels[1], set_order=4 + i)
+                for i in range(2):
+                    TrackPlayFactory(track=tracks[7 + i], setlist=setlist, label=labels[2], set_order=7 + i)
+                TrackPlayFactory(track=tracks[9], setlist=setlist, label=labels[3], set_order=9)
+
+        url = reverse('dj-stats', kwargs={'pk': dj.pk.hex})
+        res = self.client.get(url, format='json')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(res.json()['top_artists'][0]['count'], 15)  # 5 tracks * 3 sets = 15
+        self.assertEqual(res.json()['top_artists'][1]['count'], 9)  # 3 tracks * 3 sets = 9
+        self.assertEqual(res.json()['top_artists'][2]['count'], 6)  # 2 tracks * 3 sets = 6
+        self.assertEqual(res.json()['top_labels'][0]['count'], 12)  # 4 track plays on label # 1 * 3 sets = 12
+        self.assertEqual(res.json()['top_labels'][1]['count'], 9)  # 3 track plays on label # 2 * 3 sets = 9
+        self.assertEqual(res.json()['top_labels'][2]['count'], 6)  # 2 track plays on label # 3 * 3 sets = 6
+        self.assertEqual(res.json()['top_labels'][3]['count'], 3)  # 1 track plays on label # 4 * 3 sets = 3
+
 
 class LabelsApiTestCase(SetSpyApiTestCase):
     list_url = reverse('label-list')
@@ -196,8 +252,6 @@ class TracksApiTestCase(SetSpyApiTestCase):
         self.assertEqual(res.data['count'], 2)
 
     def test_stats(self):
-        url = reverse('track-stats')
-
         tracks = []
         for i in range(10):
             tracks.append(TrackFactory())
@@ -206,11 +260,6 @@ class TracksApiTestCase(SetSpyApiTestCase):
             setlist = SetlistFactory()
             for i in range(10):
                 TrackPlayFactory(track=tracks[i], setlist=setlist, set_order=i)
-
-        res = self.client.get(url, format='json')
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        for i in range(10):
-            self.assertEqual(len(res.data['results'][i]['setlists']), 3)
 
         url = reverse('track-stats', kwargs={'pk': tracks[0].pk.hex})
         res = self.client.get(url, format='json')
