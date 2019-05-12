@@ -5,9 +5,6 @@ RUN mkdir -p /usr/src/app
 RUN apt-get update \
   && apt-get install -y postgresql-client git
 
-#RUN groupadd -r django \
-#    && useradd -r -g django django
-
 WORKDIR /usr/src/app/
 COPY ./requirements /usr/src/app/requirements
 RUN pip install --no-cache-dir -r requirements/production.txt
