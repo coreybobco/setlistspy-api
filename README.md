@@ -2,7 +2,7 @@
 Setlist Spy is an API for searching DJ setlists to discover new music. Other music suggestion engines like Youtube tend to create feedback loops by overrelying on what else you have already played or what else other people who play the same music also play. In contrast, Setlist Spy lets you pick the minds of cratediggers to find new musical inspiration.
 
 ### Features
-- Django 2.0 / Rest Framework API
+- Django 2.2 + Rest Framework API
 - PostgreSQL 9.6
 - Redis Cache
 - Dataset Built from [MixesDB.com](http://mixesdb.com) XML Dumps
@@ -32,9 +32,3 @@ To populate the database, run:
 
 ### Kubernetes
 In .config/gcloud/secrets, store your environment variables in cloudsql.txt and django.txt
-
-### Roadmap Features
-- Celery Beat for Continuous Updates to Dataset
-- API Call for "Most Similar DJ" based on number of tracks / artist / label plays shared
-- Music Suggestion Searches for Genres Based on DJ/Artist Genre Affiliations Pulled from Discogs API
-- "Markov Chain" DJ Setlist
