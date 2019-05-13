@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.decorators import list_route, detail_route
+from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework_filters.backends import ComplexFilterBackend
 from rest_framework.response import Response
@@ -32,7 +32,7 @@ class DJViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):
             return DJStatsSerializer
         return super().get_serializer_class(*args, **kwargs)
 
-    @detail_route(methods=['get'], url_path='stats')
+    @action(detail=True, methods=['get'], url_path='stats')
     def stats(self, request, pk=None, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, context=self.get_serializer_context(), **kwargs)
@@ -67,7 +67,7 @@ class TrackViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):
             return TrackStatsSerializer
         return super().get_serializer_class(*args, **kwargs)
 
-    @detail_route(methods=['get'], url_path='stats')
+    @action(detail=True, methods=['get'], url_path='stats')
     def stats(self, request, pk=None, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, context=self.get_serializer_context(), **kwargs)
