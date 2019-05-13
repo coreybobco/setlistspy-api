@@ -10,6 +10,7 @@ Setlist Spy is an API for searching DJ setlists to discover new music. Other mus
 - [Silk](https://github.com/jazzband/django-silk) for Query Monitoring / Tuning
 - React Frontend: [coreybobco/setlistspy-web](https://github.com/coreybobco/setlistspy-web)
 - Kubernetes Deployment for Google Cloud Platform
+- Travis CI
 
 ### Running Locally 
 #### ...with Docker
