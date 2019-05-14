@@ -1,4 +1,4 @@
-from django.db.models import Case, Count, Max, OuterRef, When
+from django.db.models import Case, Count, Max, OuterRef, Sum, When
 from rest_framework import serializers
 from setlistspy.app.models import Artist, DJ, Label, Setlist, Track, TrackPlay
 
@@ -106,6 +106,32 @@ class ArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
         fields = ('id', 'name')
+
+
+class ArtistStatsSerializer(serializers.ModelSerializer):
+    total_plays = serializers.SerializerMethodField(read_only=True)
+    top_djs = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Artist
+        fields = ('id', 'name', 'total_plays', 'top_djs')
+
+    def get_total_plays(self, obj):
+        return obj.tracks.annotate(play_count=Count('plays')).aggregate(total_plays=Sum('play_count'))['total_plays']
+
+    def get_top_djs(self, obj):
+        # Group the cumulative track plays on a label by the djs that played the tracks and order by the play count
+        tracks_qs = obj.tracks.values('plays__setlist__dj').order_by('plays__setlist__dj')\
+            .annotate(count=Count('plays__setlist__dj')).order_by('-count')[:25]
+        dj_play_counts = {
+            track['plays__setlist__dj']: track['count']
+            for track in tracks_qs
+        }
+        preserved_order = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(dj_play_counts.keys())])
+        top_djs_qs = DJ.objects.filter(pk__in=dj_play_counts.keys()).order_by(preserved_order)
+        dj_context = self.context
+        dj_context['play_counts'] = dj_play_counts
+        return DJPlayCountSerializer(many=True, context=dj_context).to_representation(top_djs_qs)
 
 
 class ArtistPlayCountSerializer(DJSerializer):
