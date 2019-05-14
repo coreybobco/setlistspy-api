@@ -150,6 +150,7 @@ class DJsApiTestCase(SetSpyApiTestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json()['most_stacked_setlist']['id'], first_setlist.pk.__str__())
 
+
 class LabelsApiTestCase(SetSpyApiTestCase):
     list_url = reverse('label-list')
 
@@ -224,6 +225,7 @@ class LabelsApiTestCase(SetSpyApiTestCase):
         self.assertEqual(res.json()['top_played_artists'][0]['play_count'], 15)
         self.assertEqual(res.json()['top_played_artists'][1]['id'], other_artist.id.__str__())
         self.assertEqual(res.json()['top_played_artists'][1]['play_count'], 3)
+
 
 class TracksApiTestCase(SetSpyApiTestCase):
     list_url = reverse('track-list')
@@ -308,6 +310,7 @@ class TracksApiTestCase(SetSpyApiTestCase):
         res = self.client.get(url, format='json')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data['setlists']), 3)
+
 
 class TrackPlaysApiTestCase(SetSpyApiTestCase):
     list_url = reverse('trackplay-list')
