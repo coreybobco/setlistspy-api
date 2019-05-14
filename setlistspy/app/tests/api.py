@@ -145,7 +145,7 @@ class DJsApiTestCase(SetSpyApiTestCase):
 
         # Make the first setlist 1 track longer to make sure the 'most stacked setlist' stat works right
         first_setlist = Setlist.objects.get(mixesdb_id=0)
-        TrackPlayFactory(setlist=first_setlist)
+        TrackPlayFactory(setlist=first_setlist, set_order=11)
         res = self.client.get(url, format='json')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json()['most_stacked_setlist']['id'], first_setlist.pk.__str__())

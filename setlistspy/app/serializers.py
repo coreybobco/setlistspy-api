@@ -120,6 +120,7 @@ class ArtistPlayCountSerializer(DJSerializer):
             return self.context['play_counts'].get(obj.pk, None)
         return None
 
+
 class BaseLabelSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -142,6 +143,7 @@ class LabelSerializer(BaseLabelSerializer):
         if hasattr(obj, 'total_plays'):
             return obj.total_plays
         return obj.track_plays.count()
+
 
 class LabelPlayCountSerializer(LabelSerializer):
     play_count = serializers.SerializerMethodField()
