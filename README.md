@@ -31,5 +31,20 @@ To populate the database, run:
 ./manage.py scrape_mixesdb.py
 ``` 
 
+### Running the Tests
+To run the tests, run:
+```
+./testrunner.sh
+``` 
+or to run a specific test case, run this, substituting the last part
+```
+./testrunner.sh setlistspy.app.tests.api.[TEST CASE].[TEST]
+``` 
+
+### To import data locally, run
+```
+./import-db.sh [DB_FILE]
+``` 
+
 ### Kubernetes
 In .config/gcloud/secrets, store your environment variables in cloudsql.txt and django.txt
