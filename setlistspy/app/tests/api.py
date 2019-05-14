@@ -45,6 +45,34 @@ class ArtistsApiTestCase(SetlistSpyApiTestCase):
         res = self.client.get(self.list_url, {'name__in': f'{artist1.name},{artist2.name}'}, format='json')
         self.assertEqual(res.data['count'], 2)
 
+    def test_stats(self):
+        # 3 setlists by different DJs -- 10 tracks by artist 1 in the first, 5 tracks by artist 1 in the 2nd,
+        # and 2 tracks by another artist entirely in the third
+        artist = ArtistFactory()
+        setlists = []
+        for i in range(3):
+            setlists.append(SetlistFactory())
+        for i in range(10):
+            track = TrackFactory(artist=artist)
+            TrackPlayFactory(track=track, setlist=setlists[0], set_order=i+1)
+        for i in range(5):
+            track = TrackFactory(artist=artist)
+            TrackPlayFactory(track=track, setlist=setlists[1], set_order=i+1)
+        other_artist = ArtistFactory()
+        for i in range(2):
+            track = TrackFactory(artist=other_artist)
+            TrackPlayFactory(track=track, setlist=setlists[2], set_order=i+1)
+
+        url = reverse('artist-stats', kwargs={'pk': artist.pk.hex})
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK, msg=res.data)
+        self.assertEqual(res.json()['total_plays'], 15) # 10 + 5
+        self.assertEqual(len(res.json()['top_djs']), 2)
+        self.assertEqual(res.json()['top_djs'][0]['id'], setlists[0].dj.id.__str__())
+        self.assertEqual(res.json()['top_djs'][0]['play_count'], 10)
+        self.assertEqual(res.json()['top_djs'][1]['id'], setlists[1].dj.id.__str__())
+        self.assertEqual(res.json()['top_djs'][1]['play_count'], 5)
+
 
 class DJsApiTestCase(SetlistSpyApiTestCase):
     list_url = reverse('dj-list')
