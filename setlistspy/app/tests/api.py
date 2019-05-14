@@ -134,28 +134,34 @@ class DJsApiTestCase(SetSpyApiTestCase):
         res = self.client.get(url, format='json')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(res.json()['top_artists'][0]['count'], 15)  # 5 tracks * 3 sets = 15
-        self.assertEqual(res.json()['top_artists'][1]['count'], 9)  # 3 tracks * 3 sets = 9
-        self.assertEqual(res.json()['top_artists'][2]['count'], 6)  # 2 tracks * 3 sets = 6
-        self.assertEqual(res.json()['top_labels'][0]['count'], 12)  # 4 track plays on label # 1 * 3 sets = 12
-        self.assertEqual(res.json()['top_labels'][1]['count'], 9)  # 3 track plays on label # 2 * 3 sets = 9
-        self.assertEqual(res.json()['top_labels'][2]['count'], 6)  # 2 track plays on label # 3 * 3 sets = 6
-        self.assertEqual(res.json()['top_labels'][3]['count'], 3)  # 1 track plays on label # 4 * 3 sets = 3
+        self.assertEqual(res.json()['top_played_artists'][0]['play_count'], 15)  # 5 tracks * 3 sets = 15
+        self.assertEqual(res.json()['top_played_artists'][1]['play_count'], 9)  # 3 tracks * 3 sets = 9
+        self.assertEqual(res.json()['top_played_artists'][2]['play_count'], 6)  # 2 tracks * 3 sets = 6
+        self.assertEqual(res.json()['top_played_labels'][0]['play_count'], 12)  # 4 track plays on label # 1 * 3 sets = 12
+        self.assertEqual(res.json()['top_played_labels'][1]['play_count'], 9)  # 3 track plays on label # 2 * 3 sets = 9
+        self.assertEqual(res.json()['top_played_labels'][2]['play_count'], 6)  # 2 track plays on label # 3 * 3 sets = 6
+        self.assertEqual(res.json()['top_played_labels'][3]['play_count'], 3)  # 1 track plays on label # 4 * 3 sets = 3
+        self.assertNotEqual(res.json()['most_stacked_setlist']['id'], None)  # All setlists have equal length
 
         # Make the first setlist 1 track longer to make sure the 'most stacked setlist' stat works right
         first_setlist = Setlist.objects.get(mixesdb_id=0)
         TrackPlayFactory(setlist=first_setlist)
-
+        res = self.client.get(url, format='json')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.json()['most_stacked_setlist']['id'], first_setlist.pk.__str__())
 
 class LabelsApiTestCase(SetSpyApiTestCase):
     list_url = reverse('label-list')
 
     def test_list(self):
         for i in range(3):
-            LabelFactory()
+            label = LabelFactory()
+            for j in range(4):
+                TrackPlayFactory(label=label)
         res = self.client.get(self.list_url)
         self.assertEqual(res.status_code, status.HTTP_200_OK, msg=res.data)
         self.assertEqual(res.data['count'], 3)
+        # self.assertEqual(res.data['results'][0]['total_plays'], 4)
 
     def test_retrieve(self):
         label = LabelFactory()
@@ -186,6 +192,38 @@ class LabelsApiTestCase(SetSpyApiTestCase):
         res = self.client.get(self.list_url, label_filter, format='json')
         self.assertEqual(res.data['count'], 2)
 
+    def test_stats(self):
+        labels = []
+        # Create 1 labels and 3 setlists from different djs
+        # 9 tracks from label 1 on setlist 1, 6 from label 2 on setlist 2, 3 from label 3 on setlist 3
+        # 15 tracks by artist on label, 3 by other artist on label, 1 not on label
+        setlists = []
+        label = LabelFactory()
+        artist = ArtistFactory()
+        other_artist = ArtistFactory()
+        for i in range(3):
+            setlists.append(SetlistFactory())
+            setlist_length = 9 - 3 * i
+            for j in range(setlist_length):
+                track_artist = artist if i < 2 else other_artist
+                track = TrackFactory(artist=track_artist)
+                TrackPlayFactory(track=track, setlist=setlists[i], label=label, set_order=j)
+        TrackPlayFactory()  # One other track play on a different label to make sure total play count is correct
+
+        url = reverse('label-stats', kwargs={'pk': label.pk.hex})
+        res = self.client.get(url, format='json')
+        self.assertEqual(res.status_code, status.HTTP_200_OK, msg=res.data)
+        self.assertEqual(res.json()['total_plays'], 18)
+        self.assertEqual(res.json()['top_djs'][0]['id'], setlists[0].dj.id.__str__())
+        self.assertEqual(res.json()['top_djs'][0]['play_count'], 9)
+        self.assertEqual(res.json()['top_djs'][1]['id'], setlists[1].dj.id.__str__())
+        self.assertEqual(res.json()['top_djs'][1]['play_count'], 6)
+        self.assertEqual(res.json()['top_djs'][2]['id'], setlists[2].dj.id.__str__())
+        self.assertEqual(res.json()['top_djs'][2]['play_count'], 3)
+        self.assertEqual(res.json()['top_played_artists'][0]['id'], artist.id.__str__())
+        self.assertEqual(res.json()['top_played_artists'][0]['play_count'], 15)
+        self.assertEqual(res.json()['top_played_artists'][1]['id'], other_artist.id.__str__())
+        self.assertEqual(res.json()['top_played_artists'][1]['play_count'], 3)
 
 class TracksApiTestCase(SetSpyApiTestCase):
     list_url = reverse('track-list')
