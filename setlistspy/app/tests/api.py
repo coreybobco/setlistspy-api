@@ -6,7 +6,7 @@ from setlistspy.app.models import Artist, DJ, Label, Setlist, Track, TrackPlay
 from setlistspy.app.factories import *
 
 
-class SetSpyApiTestCase(APITestCase):
+class SetlistSpyApiTestCase(APITestCase):
 
     def setUp(self, *args, **kwargs):
         self.user = UserFactory()
@@ -17,7 +17,7 @@ class SetSpyApiTestCase(APITestCase):
         super().setUp(*args, **kwargs)
 
 
-class ArtistsApiTestCase(SetSpyApiTestCase):
+class ArtistsApiTestCase(SetlistSpyApiTestCase):
     list_url = reverse('artist-list')
 
     def test_list(self):
@@ -46,7 +46,7 @@ class ArtistsApiTestCase(SetSpyApiTestCase):
         self.assertEqual(res.data['count'], 2)
 
 
-class DJsApiTestCase(SetSpyApiTestCase):
+class DJsApiTestCase(SetlistSpyApiTestCase):
     list_url = reverse('dj-list')
 
     def test_list(self):
@@ -151,7 +151,7 @@ class DJsApiTestCase(SetSpyApiTestCase):
         self.assertEqual(res.json()['most_stacked_setlist']['id'], first_setlist.pk.__str__())
 
 
-class LabelsApiTestCase(SetSpyApiTestCase):
+class LabelsApiTestCase(SetlistSpyApiTestCase):
     list_url = reverse('label-list')
 
     def test_list(self):
@@ -227,7 +227,7 @@ class LabelsApiTestCase(SetSpyApiTestCase):
         self.assertEqual(res.json()['top_played_artists'][1]['play_count'], 3)
 
 
-class TracksApiTestCase(SetSpyApiTestCase):
+class TracksApiTestCase(SetlistSpyApiTestCase):
     list_url = reverse('track-list')
 
     def test_list(self):
@@ -312,7 +312,7 @@ class TracksApiTestCase(SetSpyApiTestCase):
         self.assertEqual(len(res.data['setlists']), 3)
 
 
-class TrackPlaysApiTestCase(SetSpyApiTestCase):
+class TrackPlaysApiTestCase(SetlistSpyApiTestCase):
     list_url = reverse('trackplay-list')
 
     def test_list(self):
@@ -378,7 +378,7 @@ class TrackPlaysApiTestCase(SetSpyApiTestCase):
         self.assertEqual(res.data['count'], 2)
 
 
-class SetlistsApiTestCase(SetSpyApiTestCase):
+class SetlistsApiTestCase(SetlistSpyApiTestCase):
     list_url = reverse('setlist-list')
 
     def test_list(self):
