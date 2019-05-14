@@ -3,7 +3,7 @@ Setlist Spy is an API for searching DJ setlists to discover new music. Other mus
 
 ### Features
 - Django 2.2 + Rest Framework API
-- PostgreSQL 9.6
+- PostgreSQL
 - Redis Cache
 - Dataset Built from [MixesDB.com](http://mixesdb.com) XML Dumps
 - Celery, Flower for Sanitizing Data and Seeding the DB -- [flower.setlistspy.com](http://flower.setlistspy.com)

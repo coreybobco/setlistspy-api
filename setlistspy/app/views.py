@@ -12,6 +12,7 @@ from setlistspy.app.serializers import (
     DJSerializer,
     DJStatsSerializer,
     LabelSerializer,
+    LabelStatsSerializer,
     TrackSerializer,
     TrackPlaySerializer,
     TrackStatsSerializer,
@@ -86,6 +87,17 @@ class LabelViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):
     queryset = Label.objects.all()
     filter_backends = (ComplexFilterBackend, OrderingFilter)
     filter_class = LabelFilter
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action == 'stats':
+            return LabelStatsSerializer
+        return super().get_serializer_class(*args, **kwargs)
+
+    @action(detail=True, methods=['get'], url_path='stats')
+    def stats(self, request, pk=None, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, context=self.get_serializer_context(), **kwargs)
+        return Response(serializer.data)
 
 
 class TrackPlayViewSet(SetSpyListModelMixin, viewsets.ModelViewSet):

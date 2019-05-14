@@ -57,10 +57,9 @@ class Label(BaseSetSpyModel):
 
 
 class Track(BaseSetSpyModel):
-    artist = models.ForeignKey(Artist, on_delete=models.PROTECT)
+    artist = models.ForeignKey(Artist, on_delete=models.PROTECT, related_name="tracks")
     title = models.CharField(max_length=255)
-    setlists = models.ManyToManyField(
-        Setlist, through="TrackPlay", related_name="tracks")
+    setlists = models.ManyToManyField(Setlist, through="TrackPlay", related_name="tracks")
 
     def __str__(self):
         return f'{self.artist.name} - {self.title}'
