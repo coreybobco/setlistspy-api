@@ -9,4 +9,4 @@ RUN wget -qO- https://dl.packager.io/srv/pghero/dexter/key | apt-key add - && \
     wget -O /etc/apt/sources.list.d/dexter.list https://dl.packager.io/srv/pghero/dexter/master/installer/debian/9.repo && \
     apt-get update && apt-get install dexter
 
-COPY /compose/local/postgres/optimizations.sh /docker-entrypoint-initdb.d/optimizastions.sh
+COPY /compose/local/postgres/optimizations.sh /docker-entrypoint-initdb.d/optimizations.sh

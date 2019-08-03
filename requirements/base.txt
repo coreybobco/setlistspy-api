@@ -10,7 +10,7 @@ django-environ==0.4.5
 django-extensions==2.1.6
 django-redis==4.10.0
 djangorestframework-filters==1.0.0.dev0
-django==2.2.1
+django==2.2.4
 djangorestframework==3.9.4
 factory-boy==2.11.1
 flake8==3.5.0
