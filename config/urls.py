@@ -12,7 +12,6 @@ router.register(r'setlists', SetlistViewSet)
 router.register(r'tracks', TrackViewSet)
 router.register(r'plays', TrackPlayViewSet)
 
-
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/',

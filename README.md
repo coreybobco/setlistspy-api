@@ -8,12 +8,13 @@ Setlist Spy is an API for searching DJ setlists to discover new music. Other mus
 - Django 2.2 + Rest Framework API
 - PostgreSQL
 - Redis Cache
-- Dataset Built from [MixesDB.com](http://mixesdb.com) XML Dumps
+- Dataset Built from [MixesDB.com](http://mixesdb.com) XML Dumps -- (As of August 2019, Mixesdb.com has removed XML export functionality from their mediawiki, deprecating this information retrieval method.)
 - Celery, Flower for Sanitizing Data and Seeding the DB -- [flower.setlistspy.com](http://flower.setlistspy.com)
 - [Silk](https://github.com/jazzband/django-silk) for Query Monitoring / Tuning
 - React Frontend: [coreybobco/setlistspy-web](https://github.com/coreybobco/setlistspy-web)
 - Kubernetes Deployment for Google Cloud Platform
 - Travis CI
+- Sentry for Error Tracking
 
 There are also a few API calls for statistics I find fascinating but have not had time to implement in the frontend yet.
 Here are a few examples:
