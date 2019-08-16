@@ -1,9 +1,16 @@
-FROM python:3.6.9
+FROM python:3.6.9-alpine
 
 RUN mkdir -p /usr/src/app
 
-RUN apt-get update \
-  && apt-get install -y postgresql-client git
+RUN apk add --no-cache --virtual .build-deps \
+    bash \
+    gcc \
+    py3-gevent \
+    python3-dev \
+    musl-dev \
+    postgresql-dev \
+    git \
+    && python3 -m pip install --no-cache-dir psycopg2-binary
 
 WORKDIR /usr/src/app/
 RUN git clone https://github.com/coreybobco/setlistspy-api.git .

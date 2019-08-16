@@ -46,3 +46,6 @@ profile_data/*
 
 # Static files
 static/
+
+# Unit test / coverage reports
+.coverage
