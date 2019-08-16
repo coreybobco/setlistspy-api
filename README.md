@@ -1,6 +1,6 @@
 # Setlist Spy
 
-[![Build Status](https://travis-ci.org/coreybobco/setlistspy-api.svg?branch=master)](https://travis-ci.org/coreybobco/setlistspy-api)
+[![Build Status](https://travis-ci.org/coreybobco/setlistspy-api.svg?branch=master)](https://travis-ci.org/coreybobco/setlistspy-api) [![Coverage Status](https://coveralls.io/repos/github/coreybobco/setlistspy-api/badge.svg?branch=master)](https://coveralls.io/github/coreybobco/setlistspy-api?branch=master)
 
 Setlist Spy is an API for searching DJ setlists to discover new music. Other music suggestion engines like Youtube tend to create feedback loops by overrelying on what else you have already played or what else other people who play the same music also play. In contrast, Setlist Spy lets you pick the minds of cratediggers to find new musical inspiration.
 

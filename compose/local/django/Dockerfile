@@ -9,6 +9,7 @@ RUN apk add --no-cache --virtual .build-deps \
     python3-dev \
     musl-dev \
     postgresql-dev \
+    git \
     && python3 -m pip install --no-cache-dir psycopg2-binary
 
 WORKDIR /usr/src/app/

@@ -187,7 +187,9 @@ class LabelsApiTestCase(SetlistSpyApiTestCase):
         for i in range(3):
             label = LabelFactory()
             for j in range(4):
-                TrackPlayFactory(label=label)
+                artist = ArtistFactory()
+                track = TrackFactory(artist=artist)
+                TrackPlayFactory(track=track, label=label)
         res = self.client.get(self.list_url)
         self.assertEqual(res.status_code, status.HTTP_200_OK, msg=res.data)
         self.assertEqual(res.data['count'], 3)
