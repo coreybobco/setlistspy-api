@@ -4,8 +4,6 @@ from lib.crawler import MixesDBCrawler
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        # Positional arguments
-        # Named (optional) arguments
         parser.add_argument(
             '--everything',
             action='store_true',
@@ -32,7 +30,6 @@ class Command(BaseCommand):
         # )
 
     def handle(self, *args, **options):
-        print(options)
         crawler = MixesDBCrawler()
         if options['everything'] or options['djs']:
             crawler.crawl_all_artist_categories()

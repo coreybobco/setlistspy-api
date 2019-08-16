@@ -24,7 +24,7 @@ services:
       - .:/usr/src/app
       - ./compose/local/django/prepare_db:/usr/src/app/prepare_db
       - ./compose/local/django/entrypoint:/usr/src/app/entrypoint
-    entrypoint: /usr/src/app/entrypoint
+    command: /usr/src/app/entrypoint
 
   postgresql:
     image: setlistspy_psql
