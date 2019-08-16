@@ -23,12 +23,8 @@ services:
 
   cloudsql-proxy:
     image: gcr.io/cloudsql-docker/gce-proxy:1.12
-    # Port: MySQL (3306), PostgreSQL (5433)
     command: /cloud_sql_proxy -instances=setlist-spy:us-west1-b:setlistspy-pql9=tcp:0.0.0.0:5432 -credential_file=/root/.config/gcloud/credentials.json
     volumes:
-      # this mounts your application default credential on the container, preventing the
-      # 'invalid json file "/config": google: read JWT from JSON credentials: 'type' field is "authorized_user" (expected "service_account")'
-      # error if you point to the actual credential file directly
       - .config:/root/.config
     ports:
       - 5432:5432

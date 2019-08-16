@@ -1,6 +1,6 @@
-import dj_database_url
 import os
-import environ
+import dj_database_url, environ, sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 env = environ.Env()
 
@@ -182,3 +182,10 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 EVENT_MAX_RETRIES = 5
+
+# SENTRY
+# ------------------------------------------------------------------------------
+sentry_sdk.init(
+    dsn="https://908c534e678d43dca776d8c9e4d46b9e@sentry.io/1531268",
+    integrations=[DjangoIntegration()]
+)

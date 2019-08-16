@@ -1,4 +1,4 @@
-FROM python:3.6.6
+FROM python:3.6.9
 
 RUN mkdir -p /usr/src/app
 
@@ -7,6 +7,7 @@ RUN apt-get update \
 
 WORKDIR /usr/src/app/
 RUN git clone https://github.com/coreybobco/setlistspy-api.git .
+RUN mkdir /usr/src/app/uploads
 
 COPY ./compose/local/django/prepare_db /usr/src/app/prepare_db
 COPY ./compose/local/django/entrypoint /usr/src/app/entrypoint
@@ -23,4 +24,3 @@ RUN sed -i 's/\r//' prepare_db && chmod +x prepare_db && \
 
 COPY ./requirements /usr/src/app/requirements
 RUN pip install --no-cache-dir -r requirements/production.txt
-RUN mkdir /usr/src/app/uploads

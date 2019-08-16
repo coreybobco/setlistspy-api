@@ -12,6 +12,8 @@ router.register(r'setlists', SetlistViewSet)
 router.register(r'tracks', TrackViewSet)
 router.register(r'plays', TrackPlayViewSet)
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
