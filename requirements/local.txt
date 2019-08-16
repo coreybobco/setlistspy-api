@@ -1,8 +1,10 @@
 -r ./base.txt
 
 coverage>=4.5.4
+coveralls>=1.8.2
 django-nose==1.4.6
 django-silk==3.0.2
 ipdb==0.12.2
 flake8==3.7.8
 mccabe==0.6.1
+pyyaml==5.1.2

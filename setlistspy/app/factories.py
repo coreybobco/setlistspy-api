@@ -12,6 +12,7 @@ class DJFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'app.DJ'
+        django_get_or_create = ('url',)
 
     name = factory.Faker('name')
     url = factory.Faker('url')
@@ -37,6 +38,7 @@ class ArtistFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'app.Artist'
+        django_get_or_create = ('name',)
 
     name = factory.Faker('name')
 
@@ -45,6 +47,7 @@ class LabelFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'app.Label'
+        django_get_or_create = ('name',)
 
     name = factory.LazyAttribute(lambda obj: f'{Faker().company()} Records')
     discogs_id = factory.fuzzy.FuzzyInteger(1, 99999)
