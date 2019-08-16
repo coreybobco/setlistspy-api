@@ -8,3 +8,5 @@ All notable changes to this project will be documented in this file.
 - Added related name on artist.tracks (source of sql migration)
 - Upgraded Django REST framework to 3.10.2
 - Upgraded django-rest-framework-filters to 0.11.1
+- Added django-nose / coverage/ coveralls.io support
+- Testrunner.sh now accepts optional coveralls argument to submit report manually
