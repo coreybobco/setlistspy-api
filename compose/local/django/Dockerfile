@@ -7,7 +7,6 @@ RUN apk add --no-cache --virtual .build-deps \
     gcc \
     py3-gevent \
     python3-dev \
-    libxslt-dev \
     musl-dev \
     postgresql-dev \
     && python3 -m pip install --no-cache-dir psycopg2-binary

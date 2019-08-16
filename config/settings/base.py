@@ -37,7 +37,6 @@ WSGI_APPLICATION = 'config.wsgi.applicatiot' \
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
-    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +46,8 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    'django_extensions',
+    'django_nose',
     'rest_framework_filters',
     'rest_framework',
     'rest_framework.authtoken',
@@ -190,3 +191,11 @@ sentry_sdk.init(
     dsn="https://908c534e678d43dca776d8c9e4d46b9e@sentry.io/1531268",
     integrations=[DjangoIntegration()]
 )
+
+# NOSE
+# ------------------------------------------------------------------------------
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=setlistspy.app',
+]

@@ -1,5 +1,7 @@
 -r ./base.txt
 
+coverage>=4.5.4
+django-nose==1.4.6
 django-silk==3.0.2
 ipdb==0.12.2
 flake8==3.7.8
