@@ -2,8 +2,9 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
-from setlistspy.app.models import Artist, DJ, Label, Setlist, Track, TrackPlay
-from setlistspy.app.factories import *
+from setlistspy.app.models import Setlist
+from setlistspy.app.factories import ArtistFactory, DJFactory, LabelFactory, SetlistFactory, TrackFactory, \
+    TrackPlayFactory, UserFactory
 
 
 class SetlistSpyApiTestCase(APITestCase):
@@ -222,7 +223,6 @@ class LabelsApiTestCase(SetlistSpyApiTestCase):
         self.assertEqual(res.data['count'], 2)
 
     def test_stats(self):
-        labels = []
         # Create 1 labels and 3 setlists from different djs
         # 9 tracks from label 1 on setlist 1, 6 from label 2 on setlist 2, 3 from label 3 on setlist 3
         # 15 tracks by artist on label, 3 by other artist on label, 1 not on label
@@ -357,7 +357,7 @@ class TrackPlaysApiTestCase(SetlistSpyApiTestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK, msg=res.data)
 
     def test_filters(self):
-        setlist = SetlistFactory()
+        SetlistFactory()
         play1 = TrackPlayFactory(set_order=1, label__name="Comma, Semicolon, and Period Records")
         play2 = TrackPlayFactory(set_order=2)
         TrackPlayFactory(set_order=7)  # extra track which shouldn't return in results
@@ -412,7 +412,7 @@ class SetlistsApiTestCase(SetlistSpyApiTestCase):
     def test_list(self):
         # Create 3 setlists
         for i in range(3):
-            setlist = SetlistFactory()
+            SetlistFactory()
 
         res = self.client.get(self.list_url)
         self.assertEqual(res.status_code, status.HTTP_200_OK, msg=res.data)
@@ -431,7 +431,7 @@ class SetlistsApiTestCase(SetlistSpyApiTestCase):
     def test_filters(self):
         setlist1 = SetlistFactory(b2b=False)
         setlist2 = SetlistFactory(b2b=False)
-        setlist3 = SetlistFactory(b2b=True)
+        SetlistFactory(b2b=True)
         for i in range(3):
             TrackPlayFactory(setlist=setlist1)
 

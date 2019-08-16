@@ -1,5 +1,5 @@
 from celery import shared_task, Task
-from django.db import transaction, DEFAULT_DB_ALIAS
+from django.db import transaction
 
 
 class CeleryAtomic(transaction.Atomic):

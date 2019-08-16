@@ -13,6 +13,8 @@ class Command(BaseCommand):
             default=False,
             help='Scrape the site for the entire database',
         )
+        # Note: Mixesdb.com has removed the export page from its site, so no further data can be seeded using xml dumps
+        # Scraping the list of DJs using webdriver still works, however.
         parser.add_argument(
             '--djs',
             action='store_true',
@@ -20,13 +22,14 @@ class Command(BaseCommand):
             default=False,
             help='Scrape the DJs',
         )
-        parser.add_argument(
-            '--setlists',
-            action='store_true',
-            dest='setlists',
-            default=False,
-            help='Scrape the setlist data for all DJs in the database',
-        )
+        # Deprecated
+        # parser.add_argument(
+        #     '--setlists',
+        #     action='store_true',
+        #     dest='setlists',
+        #     default=False,
+        #     help='Scrape the setlist data for all DJs in the database',
+        # )
 
     def handle(self, *args, **options):
         print(options)

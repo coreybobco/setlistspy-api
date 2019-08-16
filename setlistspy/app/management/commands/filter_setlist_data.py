@@ -1,8 +1,6 @@
-import csv, datetime, logging, operator, requests, sys, time
-from django.core.management.base import BaseCommand, CommandError
-import discogs_client
+import csv, operator, requests, time
+from django.core.management.base import BaseCommand
 from collections import OrderedDict
-from pprint import pprint
 from multiprocessing import Pool
 
 '''Because there is too much data from Mixesdb for Neo4j to reasonably handle, this command will create a whitelist

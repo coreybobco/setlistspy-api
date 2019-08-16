@@ -1,16 +1,10 @@
 from .base import *  # noqa
 from .base import env
-import dj_database_url
 
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='7BuURoRA0FIaBFlFw0K6JdwcGG9nEWU7qhg8mdawtB8OA3AiSe2LO8yDGPo073Ah')
 ALLOWED_HOSTS = ['*']
 
 DEBUG = True
-
-DATABASES['default'] = dj_database_url.config(
-    default='postgres://127.0.0.1:5432/setlistspy'
-)
-
 MIDDLEWARE.insert(3, 'silk.middleware.SilkyMiddleware')
 INSTALLED_APPS.append('silk')
 SILKY_PYTHON_PROFILER = True

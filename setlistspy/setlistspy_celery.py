@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 import os
-import xmltodict
 
 from celery import Celery
 from django.conf import settings

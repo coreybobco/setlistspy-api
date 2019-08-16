@@ -1,4 +1,4 @@
-from django.db.models import Case, Count, Max, OuterRef, Sum, When
+from django.db.models import Case, Count, Max, Sum, When
 from rest_framework import serializers
 from setlistspy.app.models import Artist, DJ, Label, Setlist, Track, TrackPlay
 
