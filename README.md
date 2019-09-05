@@ -9,7 +9,7 @@ Setlist Spy is an API for searching DJ setlists to discover new music. Other mus
 - PostgreSQL
 - Redis Cache
 - Dataset Built from [MixesDB.com](http://mixesdb.com) XML Dumps -- (As of August 2019, Mixesdb.com has removed XML export functionality from their mediawiki, deprecating this information retrieval method.)
-- Celery, Flower for Sanitizing Data and Seeding the DB -- [flower.setlistspy.com](http://flower.setlistspy.com)
+- Celery, Flower for Sanitizing Data and Seeding the DB -- [flower.setlistspy.com](http://flower.setlistspy.com:5555)
 - [Silk](https://github.com/jazzband/django-silk) for Query Monitoring / Tuning
 - React Frontend: [coreybobco/setlistspy-web](https://github.com/coreybobco/setlistspy-web)
 - Kubernetes Deployment for Google Cloud Platform
@@ -19,10 +19,10 @@ Setlist Spy is an API for searching DJ setlists to discover new music. Other mus
 There are also a few API calls for statistics I find fascinating but have not had time to implement in the frontend yet.
 Here are a few examples:
 
-- Stats for Jeff Mills as a DJ - http://api.setlistspy.com:8000/api/djs/beb0c55f-84fe-4137-bb34-fbce2654a88c/stats/
-- Artist Stats for Aphex Twin -- i.e. information on how often tracks by the music artist Aphex Twin have been played in setlists and by what DJs: http://api.setlistspy.com:8000/api/artists/55b11e05-c8e3-43e4-98a7-eb7a1ecff8ae/stats/
-- Track Stats for Jeff Mills - The Bells: http://api.setlistspy.com:8000/api/tracks/52c6bceb-c703-41a4-bdd1-b34d5a41e1be/stats/
-- Label Stats for Warp Records: http://api.setlistspy.com:8000/api/labels/eeea4fb6-613f-4d34-9a24-41862a3cfc0d/stats/
+- Stats for Jeff Mills as a DJ - http://api.setlistspy.com/api/djs/beb0c55f-84fe-4137-bb34-fbce2654a88c/stats/
+- Artist Stats for Aphex Twin -- i.e. information on how often tracks by the music artist Aphex Twin have been played in setlists and by what DJs: http://api.setlistspy.com/api/artists/55b11e05-c8e3-43e4-98a7-eb7a1ecff8ae/stats/
+- Track Stats for Jeff Mills - The Bells: http://api.setlistspy.com/api/tracks/52c6bceb-c703-41a4-bdd1-b34d5a41e1be/stats/
+- Label Stats for Warp Records: http://api.setlistspy.com/api/labels/eeea4fb6-613f-4d34-9a24-41862a3cfc0d/stats/
 
 ### Running Locally 
 #### ...with Docker
