@@ -22,7 +22,7 @@ services:
       - .:/usr/src/app
       - ./compose/local/django/prepare_db:/usr/src/app/prepare_db
       - ./compose/local/django/entrypoint:/usr/src/app/entrypoint
-    command: /usr/src/app/entrypoint
+    command: tail -f /dev/null
 
   postgresql:
     image: setlistspy_psql
@@ -72,7 +72,7 @@ services:
       - app
       - celery-worker
       - celery-beat
-    command: celery flower --app=setlistspy.taskapp --broker="$REDIS_URL"
+    command: flower --app=setlistspy.taskapp --broker="${REDIS_URL}"
     ports:
       - "5555:5555"
 

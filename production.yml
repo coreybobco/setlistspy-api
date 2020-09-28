@@ -8,10 +8,8 @@ services:
     image: setlistspy_api_production
     depends_on:
       - redis
-      - phantomjs
       - cloudsql-proxy
     links:
-      - phantomjs
       - redis
     env_file:
       - ./.envs/.production/.django
@@ -40,7 +38,6 @@ services:
       - redis
       - cloudsql-proxy
     links:
-      - phantomjs
       - cloudsql-proxy
       - redis
     env_file:
