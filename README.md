@@ -40,7 +40,7 @@ docker-compose -f production.yml up
 ### Seeding the Database
 To populate the database, run:
 ```
-./manage.py scrape_mixesdb.py
+./manage.py scrape_mixesdb --everything
 ``` 
 
 ### Running the Tests

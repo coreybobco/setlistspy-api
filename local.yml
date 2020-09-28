@@ -76,8 +76,7 @@ services:
     ports:
       - "5555:5555"
 
-#  Removed with deprecation of Mixesdb webscrape/xml dump functionality
-#  phantomjs:
-#    image: codeclou/docker-phantomjs-webdriver-standalone:latest
-#    ports:
-#      - "4444:4444"
+  phantomjs:
+    image: codeclou/docker-phantomjs-webdriver-standalone:latest
+    ports:
+      - "4444:4444"
