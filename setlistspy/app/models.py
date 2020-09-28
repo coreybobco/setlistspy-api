@@ -1,5 +1,18 @@
+import os
 from django.db import models
 from setlistspy.app.base_model import BaseSetSpyModel
+from playhouse.postgres_ext import *
+
+
+# def get_db():
+#     return PostgresqlExtDatabase(
+#         os.getenv('POSTGRES_HOST'),
+#         user=os.getenv('POSTGRES_USER'),
+#         password=os.getenv('POSTGRES_PASSWORD'),
+#         host="localhost",
+#         port=os.getenv('POSTGRES_PORT'),
+#         register_hstore=False
+# )
 
 
 class DJ(BaseSetSpyModel):

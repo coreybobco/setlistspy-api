@@ -21,6 +21,7 @@ idna==2.6
 kombu==4.5.0
 lxml==4.5.2  # Removed with deprecation of Mixesdb webscrape/xml dump functionality
 oauthlib==2.0.6
+peewee==3.13.3
 psycopg2==2.8.2
 pygments==2.2.0
 python-dateutil==2.6.1
