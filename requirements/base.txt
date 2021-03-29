@@ -23,7 +23,7 @@ lxml==4.5.2  # Removed with deprecation of Mixesdb webscrape/xml dump functional
 oauthlib==2.0.6
 peewee==3.13.3
 psycopg2==2.8.2
-pygments==2.2.0
+pygments==2.7.4
 python-dateutil==2.6.1
 pytz==2017.3
 redis==3.5.3 
