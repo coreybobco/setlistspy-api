@@ -1,5 +1,5 @@
 celery==4.3.1
-certifi==2017.11.5
+certifi==2022.12.7
 chardet==3.0.4
 discogs-client==2.2.2
 dj-database-url==0.5.0
